@@ -7,37 +7,34 @@ contract SwappiNFT is ERC721 {
     uint256 public _tokenCounter;
     uint256 public _totalSupply;
     address public _contractOwner;
+    string public _tokenBaseURI;
 
-    mapping (uint256 => string) private _tokenURIs;
     mapping (address => uint256) private _whiteList;
 
     constructor(
             string memory name,
             string memory symbol,
-            uint256 totalSupply
+            uint256 totalSupply,
+            string memory tokenBaseURI
         ) ERC721(name, symbol) {
             _tokenCounter = 0;
             _totalSupply = totalSupply;
             _contractOwner = msg.sender;
+            _tokenBaseURI = tokenBaseURI;
         }
 
     function setTotalSupply(uint256 totalSupply) public {
-        require(msg.sender == _contractOwner, "Must be contract owner");
+        require(msg.sender == _contractOwner, "SwappiNFT: must be contract owner");
         _totalSupply = totalSupply;
     }
 
     function setContractOwner(address newContractOwner) public {
-        require(msg.sender == _contractOwner, "Must be contract owner");
+        require(msg.sender == _contractOwner, "SwappiNFT: must be contract owner");
         _contractOwner = newContractOwner;
     }
 
-    function addToWhitelist(address addr) public {
-        require(msg.sender == _contractOwner, "Must be contract owner");
-        _whiteList[addr] += 1;
-    }
-
     function setWhiteList(address addr, uint256 capacity) public {
-        require(msg.sender == _contractOwner, "Must be contract owner");
+        require(msg.sender == _contractOwner, "SwappiNFT: must be contract owner");
         _whiteList[addr] = capacity;
     }
 
@@ -45,28 +42,27 @@ contract SwappiNFT is ERC721 {
         return _whiteList[addr];
     }
 
-    function mint(string memory _tokenURI) public {
-        require(_tokenCounter < _totalSupply, "Exceed the total supply");
+    function setTokenBaseURI(string memory tokenBaseURI) public {
+        require(msg.sender == _contractOwner, "SwappiNFT: must be contract owner");
+        _tokenBaseURI = tokenBaseURI;
+    }
 
-        require(_whiteList[msg.sender] > 0, "Address must be in whitelist"); 
+    function mint() public {
+        require(_tokenCounter < _totalSupply, "SwappiNFT: exceed the total supply");
+        require(_whiteList[msg.sender] > 0, "SwappiNFT: address must be in whitelist"); 
         _whiteList[msg.sender] -= 1;
 
         _safeMint(msg.sender, _tokenCounter);
-        _setTokenURI(_tokenCounter, _tokenURI);
 
         _tokenCounter++;
     }
 
-    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {
-        require(
-            _exists(tokenId),
-            "ERC721Metadata: URI set of nonexistent token"
-        );
-        _tokenURIs[tokenId] = _tokenURI;
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _tokenBaseURI;
     }
 
     function tokenURI(uint256 tokenId) public view virtual override returns(string memory) {
-        require(_exists(tokenId), "ERC721URIStorage: URI query for nonexistent token");
-        return _tokenURIs[tokenId];
+        require(_exists(tokenId), "SwappiNFT: URI query for nonexistent token");
+        return _baseURI();
     }
 }
