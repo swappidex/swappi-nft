@@ -14,12 +14,13 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const SwappiNFT = await hre.ethers.getContractFactory("SwappiNFT");
+  console.log("Swappi NFT deployed to 1111");
+  const swappiNFT = await SwappiNFT.deploy("Swappi NFT Contract", "SwappiNFT", 1000, "https://metadata.conflux.fun/images/dahan/18/verse.svg");
 
-  await greeter.deployed();
+  await swappiNFT.deployed();
 
-  console.log("Greeter deployed to:", greeter.address);
+  console.log("Swappi NFT deployed to:", swappiNFT.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
