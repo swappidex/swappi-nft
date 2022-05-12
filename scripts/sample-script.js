@@ -15,8 +15,7 @@ async function main() {
 
   // We get the contract to deploy
   const SwappiNFT = await hre.ethers.getContractFactory("SwappiNFT");
-  console.log("Swappi NFT deployed to 1111");
-  const swappiNFT = await SwappiNFT.deploy("Swappi NFT Contract", "SwappiNFT", 1000, "https://metadata.conflux.fun/images/dahan/18/verse.svg");
+  const swappiNFT = await SwappiNFT.deploy("Swappi NFT Contract", "SwappiNFT", 1000, "https://metadata.conflux.fun/dahan/1/meta.json");
 
   await swappiNFT.deployed();
 
