@@ -8,6 +8,7 @@ contract SwappiNFT is ERC721 {
     uint256 public _totalSupply;
     address public _contractOwner;
     string public _tokenBaseURI;
+    bool public _mintEnabled;
 
     mapping (address => uint256) private _whiteList;
 
@@ -21,6 +22,7 @@ contract SwappiNFT is ERC721 {
             _totalSupply = totalSupply;
             _contractOwner = msg.sender;
             _tokenBaseURI = tokenBaseURI;
+            _mintEnabled = false;
         }
 
     function setTotalSupply(uint256 totalSupply) public {
@@ -47,9 +49,20 @@ contract SwappiNFT is ERC721 {
         _tokenBaseURI = tokenBaseURI;
     }
 
+    function enableMint() public {
+        require(msg.sender == _contractOwner, "SwappiNFT: must be contract owner");
+        _mintEnabled = true;
+    }
+
+    function disableMint() public {
+        require(msg.sender == _contractOwner, "SwappiNFT: must be contract owner");
+        _mintEnabled = false;
+    }
+
     function mint() public {
+        require(_mintEnabled, "SwappiNFT: mint is not enabled");
         require(_tokenCounter < _totalSupply, "SwappiNFT: exceed the total supply");
-        require(_whiteList[msg.sender] > 0, "SwappiNFT: address must be in whitelist"); 
+        require(_whiteList[msg.sender] > 0, "SwappiNFT: address must be in whitelist");
         _whiteList[msg.sender] -= 1;
 
         _safeMint(msg.sender, _tokenCounter);

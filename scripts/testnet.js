@@ -14,14 +14,22 @@ SwappiNFT.instance = new w3.eth.Contract(SwappiNFT.abi);
 let contractAddress = chainInfo.contractAddress;
 SwappiNFT.instance.options.address = contractAddress;
 
-let account1 = '0x55c1883eDe3692641B03B77722a64B39cAe1De4D';
+let adminKey = chainInfo.adminKey;
+let adminAddress = chainInfo.adminAddress;
+
+let userAddress = '';
+let userKey = '';
 
 async function main() {
-  let availableTokens = await SwappiNFT.instance.methods.verifyWhiteList(account1).call();
+  let availableTokens = await SwappiNFT.instance.methods.verifyWhiteList(userAddress).call();
   console.log(`Account available tokens: ${availableTokens}`);
 
   let totalSupply = await SwappiNFT.instance.methods._totalSupply().call();
   console.log(`Total supply: ${totalSupply}`);
+  
+  // await setWhitelist(userAddress);
+  // await enableMint();
+  await mint(userAddress, userKey);
 }
 
 async function ethTransact(data, from, privateKey, to = undefined, value = 0) {
@@ -32,7 +40,7 @@ async function ethTransact(data, from, privateKey, to = undefined, value = 0) {
   gasPrice = gasPrice.multipliedBy(1.1).integerValue().toString(10);
 
   let txParams = {
-    from: admin,
+    from: from,
     to: to,
     nonce: w3.utils.toHex(nonce),
     value: w3.utils.toHex(value),
@@ -58,15 +66,21 @@ async function mint(account, privateKey) {
   return receipt;
 }
 
-async function setWhitelist(adminAddress, userAddress) {
-  let data = SwappiNFT.instance.methods.setWhiteList(userAddress, 1).encodeABI();
-  let receipt = await ethTransact(data, adminAddress, config.adminKey, contractAddress);
+async function enableMint() {
+  let data = SwappiNFT.instance.methods.enableMint().encodeABI();
+  let receipt = await ethTransact(data, adminAddress, adminKey, contractAddress);
   return receipt;
 }
 
-async function setbaseuri(adminAddress) {
+async function setWhitelist(userAddress) {
+  let data = SwappiNFT.instance.methods.setWhiteList(userAddress, 1).encodeABI();
+  let receipt = await ethTransact(data, adminAddress, adminKey, contractAddress);
+  return receipt;
+}
+
+async function setbaseuri() {
   let data = SwappiNFT.instance.methods.setTokenBaseURI("https://metadata.conflux.fun/dahan/1/meta.json").encodeABI();
-  let receipt = await ethTransact(data, adminAddress, config.adminKey, contractAddress);
+  let receipt = await ethTransact(data, adminAddress, adminKey, contractAddress);
   return receipt;
 }
 
