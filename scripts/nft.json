@@ -1,0 +1,6 @@
+{
+    "name": "Swappi NFT Contract",
+    "symbol": "SwappiNFT",
+    "totalSupply": 1000,
+    "tokenBaseURI": "https://metadata.conflux.fun/dahan/1/meta.json"
+}

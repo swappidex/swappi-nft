@@ -1,7 +1,9 @@
-# Swappi NFT Contracts
+# Swappi NFT Contract
+
+Swappi NFT contract is built based on OpenZeppelin ERC721 template. 
 
 # Compile
-Compile a smart contract with HardHat
+Compile smart contract with HardHat
 
 `npx hardhat compile`
 
@@ -54,7 +56,7 @@ Read NFT total supply
 
 `_totalSupply()`
 
-NFT consumed
+Return NFT consumed counter
 
 `_tokenCounter()`
 
@@ -94,7 +96,7 @@ Return the number of tokens for a given address
 
 Set total supply
 
-`function setTotalSupply(uint256 totalSupply)`
+`setTotalSupply(uint256 totalSupply)`
 
 Set contranct owner
 

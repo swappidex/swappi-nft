@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 
 describe("Swappi NFT Smart Contract Tests", function () {
   let swappinft;
-  let tokenBaseURI = "https://aliyuncs.com/0.jpg";
+  let tokenBaseURI = "https://aliyuncs.com/0";
 
   this.beforeEach(async function() {
     // This is executed before each test
@@ -34,8 +34,26 @@ describe("Swappi NFT Smart Contract Tests", function () {
     expect(await swappinft.verifyWhiteList(account1.address)).to.equal(5);
   })
 
+  it("Token Base URI can be set", async function() {
+    [account1] = await ethers.getSigners();
+    await swappinft.setTokenBaseURI("https://aliyuncs.com/1");
+    expect(await swappinft._tokenBaseURI()).to.equal("https://aliyuncs.com/1");
+  })
+
+  it("Mint switch can be set", async function() {
+    [account1, account2] = await ethers.getSigners();
+    expect(await swappinft._mintEnabled()).to.equal(false);
+
+    await swappinft.enableMint();
+    expect(await swappinft._mintEnabled()).to.equal(true);
+
+    await swappinft.disableMint();
+    expect(await swappinft._mintEnabled()).to.equal(false);
+  })
+
   it("NFT is minted reverted", async function() {
     [account1] = await ethers.getSigners();
+    await swappinft.enableMint();
 
     expect(await swappinft.balanceOf(account1.address)).to.equal(0);
     
@@ -48,6 +66,7 @@ describe("Swappi NFT Smart Contract Tests", function () {
     expect(await swappinft.balanceOf(account1.address)).to.equal(0);
 
     await swappinft.setWhiteList(account1.address, 1);
+    await swappinft.enableMint();
     
     const tx = await swappinft.connect(account1).mint();
 
@@ -59,6 +78,7 @@ describe("Swappi NFT Smart Contract Tests", function () {
 
     await swappinft.setWhiteList(account1.address, 1);
     await swappinft.setWhiteList(account2.address, 1);
+    await swappinft.enableMint();
 
     const tx1 = await swappinft.connect(account1).mint();
     const tx2 = await swappinft.connect(account2).mint();

@@ -13,7 +13,7 @@ const evmChain = {
   adminKey:
     '',
   adminAddress: '',
-  contractAddress: '0xBbDba5043A73e87533b9378e58dEa577A872Dc04'
+  contractAddress: '0x3792e803d12b032e4e876e5cbe016a3cadb05fce'
 };
 
 module.exports = {

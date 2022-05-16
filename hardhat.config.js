@@ -13,19 +13,23 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   }
 });
 
-task("deploy", "Deploy the smart contracts", async(taskArgs, hre) => {
+task("deploy", "Deploy the smart contracts")
+  .addParam("name", "The NFT name")
+  .addParam("symbol", "The NFT symbol")
+  .addParam("supply", "The total supply of NFT", 1000, types.int)
+  .addParam("uri", "The base URI of NFT")
+  .setAction(async (taskArgs, hre) => {
+    const Artwork = await hre.ethers.getContractFactory("SwappiNFT");
+    const artwork = await Artwork.deploy(taskArgs.name, taskArgs.symbol, taskArgs.supply, taskArgs.uri);
+  
+    await artwork.deployed();
 
-  const Artwork = await hre.ethers.getContractFactory("SwappiNFT");
-  const artwork = await Artwork.deploy("Swappi NFT Contract", "SwappiNFT", 1000, "https://metadata.conflux.fun/images/dahan/18/verse.svg");
-
-  await artwork.deployed();
-
-  // await hre.run("verify:verify", {
-  //   address: artwork.address,
-  //   constructorArguments: [
-  //     "Swappi NFT Contract", "SwappiNFT", 1000, "https://metadata.conflux.fun/images/dahan/18/verse.svg"
-  //   ]
-  // })
+    // await hre.run("verify:verify", {
+    //   address: artwork.address,
+    //   constructorArguments: [
+    //     "Swappi NFT Contract", "SwappiNFT", 1000, "https://metadata.conflux.fun/images/dahan/18/verse.svg"
+    //   ]
+    // })
 })
 
 // You need to export an object to set up your config
