@@ -32,6 +32,11 @@ task("deploy", "Deploy the smart contracts")
     // })
 })
 
+let privateKey = process.env.PRIVATE_KEY;
+if (typeof(privateKey) == "undefined") {
+  privateKey = "0x1234567890123456789012345678901234567890123456789012345678901234";
+}
+
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
@@ -44,7 +49,7 @@ module.exports = {
     testnet: {
       url: "https://evmtestnet.confluxrpc.com",
       accounts: [
-        process.env.PRIVATE_KEY,
+        privateKey
       ]
     }
   }

@@ -48,9 +48,9 @@ Parameters:
 
 # API
 ## User API
-MINT a NFT
+**MINT a NFT**
 
-`mint()`
+**`mint()`**
 
 Read NFT total supply
 
