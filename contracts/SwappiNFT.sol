@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract SwappiNFT is ERC721 {
     uint256 public _tokenCounter;
@@ -11,7 +12,7 @@ contract SwappiNFT is ERC721 {
     bool public _mintEnabled;
 
     address public _token;
-    address public _tokenRecevier;
+    address public _tokenReceiver;
     uint256 public _NFTPrice;
 
     mapping (address => bool) private _minted;
@@ -39,7 +40,7 @@ contract SwappiNFT is ERC721 {
             _tokenBaseURI = tokenBaseURI;
             _mintEnabled = false;
             _token = token;
-            _tokenRecevier = tokenReceiver;
+            _tokenReceiver = tokenReceiver;
             _NFTPrice = NFTPrice;
         }
 
@@ -74,7 +75,7 @@ contract SwappiNFT is ERC721 {
 
     function setTokenReceiver(address addr) public onlyOwner {
         require(addr != address(0), "SwappiNFT: transfer to the zero address");
-        _tokenRecevier = addr;
+        _tokenReceiver = addr;
     }
 
     function setNFTPrice(uint256 NFTPrice) public onlyOwner {
@@ -88,15 +89,11 @@ contract SwappiNFT is ERC721 {
         require(tx.origin == msg.sender, "SwappiNFT: this is a contract account");
         _minted[msg.sender] = true;
 
-        // bytes4(keccak256(bytes('transferFrom(address,address,uint256)')));
-        (bool success, bytes memory data) = _token.call(abi.encodeWithSelector(0x23b872dd, msg.sender, address(this), _NFTPrice));
-        require(success && (data.length == 0 || abi.decode(data, (bool))), 'SwappiNFT: TRANSFER_FROM_FAILED');
+        SafeERC20.safeTransferFrom(IERC20(_token), msg.sender, address(this), _NFTPrice);
 
         _safeMint(msg.sender, _tokenCounter);
 
-        // bytes4(keccak256(bytes('transfer(address,uint256)')));
-        (success, data) = _token.call(abi.encodeWithSelector(0xa9059cbb, _tokenRecevier, _NFTPrice));
-        require(success && (data.length == 0 || abi.decode(data, (bool))), 'SwappiNFT: TRANSFER_FAILED');
+        SafeERC20.safeTransfer(IERC20(_token), _tokenReceiver, _NFTPrice);
 
         _tokenCounter++;
     }

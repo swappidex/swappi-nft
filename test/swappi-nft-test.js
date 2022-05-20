@@ -65,7 +65,7 @@ describe("Swappi NFT Smart Contract Tests", function () {
 
     expect(await swappinft.balanceOf(account1.address)).to.equal(0);
     
-    await expect(swappinft.connect(account1).mint()).to.be.revertedWith('SwappiNFT: TRANSFER_FROM_FAILED');
+    await expect(swappinft.connect(account1).mint()).to.be.revertedWith('ERC20: transfer amount exceeds balance');
   })
 
   it("NFT is minted successfully", async function() {
