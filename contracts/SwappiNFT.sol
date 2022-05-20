@@ -12,7 +12,7 @@ contract SwappiNFT is ERC721 {
     bool public _mintEnabled;
 
     address public _token;
-    address public _tokenRecevier;
+    address public _tokenReceiver;
     uint256 public _NFTPrice;
 
     mapping (address => bool) private _minted;
@@ -40,7 +40,7 @@ contract SwappiNFT is ERC721 {
             _tokenBaseURI = tokenBaseURI;
             _mintEnabled = false;
             _token = token;
-            _tokenRecevier = tokenReceiver;
+            _tokenReceiver = tokenReceiver;
             _NFTPrice = NFTPrice;
         }
 
@@ -75,7 +75,7 @@ contract SwappiNFT is ERC721 {
 
     function setTokenReceiver(address addr) public onlyOwner {
         require(addr != address(0), "SwappiNFT: transfer to the zero address");
-        _tokenRecevier = addr;
+        _tokenReceiver = addr;
     }
 
     function setNFTPrice(uint256 NFTPrice) public onlyOwner {
@@ -93,7 +93,7 @@ contract SwappiNFT is ERC721 {
 
         _safeMint(msg.sender, _tokenCounter);
 
-        SafeERC20.safeTransfer(IERC20(_token), _tokenRecevier, _NFTPrice);
+        SafeERC20.safeTransfer(IERC20(_token), _tokenReceiver, _NFTPrice);
 
         _tokenCounter++;
     }
