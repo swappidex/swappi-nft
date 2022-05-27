@@ -18,12 +18,17 @@ task("deploy", "Deploy the smart contracts")
   .addParam("symbol", "The NFT symbol")
   .addParam("supply", "The total supply of NFT", 1000, types.int)
   .addParam("uri", "The base URI of NFT")
+  .addParam("token", "Token contract address")
+  .addParam("recipient", "Token receiver address")
+  .addParam("price", "NFT price", "1000000000000000000000")
   .setAction(async (taskArgs, hre) => {
     const Artwork = await hre.ethers.getContractFactory("SwappiNFT");
-    const artwork = await Artwork.deploy(taskArgs.name, taskArgs.symbol, taskArgs.supply, taskArgs.uri);
+    const artwork = await Artwork.deploy(taskArgs.name, taskArgs.symbol, taskArgs.supply, taskArgs.uri, taskArgs.token, taskArgs.recipient, ethers.BigNumber.from(taskArgs.price));
   
     await artwork.deployed();
+    console.log(`Contract address ${artwork.address}`);
 
+    // Not work for Conflux
     // await hre.run("verify:verify", {
     //   address: artwork.address,
     //   constructorArguments: [
